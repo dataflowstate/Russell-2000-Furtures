@@ -1,0 +1,12 @@
+SELECT 
+  refdatetime
+  ,priceopen
+  ,pricehigh
+  ,pricelow
+  ,priceclose
+  ,volume
+	,((pricehigh-pricelow)/priceopen)*100 as "candlerange%"
+FROM 
+  RTY_continuous_adjusted_--enter candle stick size here
+Where 
+  refdatetime like '2008%'
