@@ -5,7 +5,7 @@ SELECT
   ,pricelow
   ,priceclose
   ,volume
-	,((pricehigh-pricelow)/priceopen)*100 as "candlerange%"
+  ,((pricehigh-pricelow)/priceopen)*100 as "candlerange%"
 FROM 
   RTY_continuous_adjusted_--enter candle stick size here
 Where 
