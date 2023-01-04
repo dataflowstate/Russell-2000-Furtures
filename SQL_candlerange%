@@ -10,3 +10,16 @@ FROM
   RTY_continuous_adjusted_--enter candle stick size here
 Where 
   refdatetime like '2008%'
+
+--Top 100 most volitale hours in rus 2008-2022
+Select top 100 *
+from
+(SELECT refdatetime
+      ,priceopen
+      ,pricehigh
+      ,pricelow
+      ,priceclose
+      ,volume
+	  ,((pricehigh-pricelow)/priceopen)*100 as "candlerange%"
+  FROM RTY_continuous_adjusted_1hour) r
+  order by "candlerange%" desc
