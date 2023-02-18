@@ -1,0 +1,16 @@
+-- Add two columns to the table
+ALTER TABLE RTY_continuous_adjusted_1hour
+ADD DirectionChange int, 
+    Weekday int,
+	wickrange_pct decimal(12, 2)
+	
+
+-- Update the table with data
+UPDATE RTY_continuous_adjusted_1hour
+SET DirectionChange = CASE 
+                          WHEN priceopen > priceclose THEN 1
+                          WHEN priceopen < priceclose THEN -1 
+                          ELSE 0
+                      END, 
+   Weekday = datepart(weekday, refdatetime),
+   wickrange_pct = CAST((pricehigh - pricelow) / priceopen * 100 AS decimal(12,2))
