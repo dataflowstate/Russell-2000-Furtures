@@ -1,4 +1,4 @@
--- Add two columns to the table
+-- Add columns to the table
 ALTER TABLE RTY_continuous_adjusted_1hour
 ADD DirectionChange int, 
     Weekday int,
