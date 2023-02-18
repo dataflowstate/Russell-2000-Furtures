@@ -2,9 +2,9 @@
 ALTER TABLE RTY_continuous_adjusted_1hour
 ADD DirectionChange int, 
     Weekday int,
-	wickrange_pct decimal(12, 2)
+    wickrange_pct decimal(12, 2),
+    Yearweeknum VARCHAR(10)
 	
-
 -- Update the table with data
 UPDATE RTY_continuous_adjusted_1hour
 SET DirectionChange = CASE 
@@ -13,4 +13,6 @@ SET DirectionChange = CASE
                           ELSE 0
                       END, 
    Weekday = datepart(weekday, refdatetime),
-   wickrange_pct = CAST((pricehigh - pricelow) / priceopen * 100 AS decimal(12,2))
+   wickrange_pct = CAST((pricehigh - pricelow) / priceopen * 100 AS decimal(12,2)),
+   Yearweeknum = CAST(DATEPART(YEAR, refdatetime) AS VARCHAR(4)) +
+                CAST(DATEPART(WEEK, refdatetime) AS VARCHAR(2));
