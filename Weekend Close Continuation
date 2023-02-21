@@ -1,0 +1,52 @@
+Select* 
+From
+	(Select 
+		refdate,
+		[weekday],
+		[4hourmove],
+		Case 
+			when ([weekday]=6 or[weekday]=5) 
+			and lead([weekday], 1) OVER (ORDER BY refdate)<[weekday] 
+			then lead([4hourmove], 1) OVER (ORDER BY refdate) else null 
+		end as nextweekmove
+	From
+		(Select
+			refdate,
+			[weekday],
+			Sum(candlebody_pct) as [4hourmove]
+		From
+			(SELECT  
+				CONVERT(DATE, CAST(refdatetime AS DATETIME)) as refdate,
+				[weekday],
+				candlebody_pct
+			FROM 
+				RTY_continuous_adjusted_1hour rh
+			WHERE 
+				(refdatetime in 
+					(Select 
+						refdatetime 
+					From(
+						Select 
+							refdatetime,
+							ROW_NUMBER() OVER (PARTITION BY yearweeknum ORDER BY refdatetime DESC) AS rownum 
+						From 
+							RTY_continuous_adjusted_1hour rh) as prn 
+						Where 
+							rownum<5)
+				or
+				refdatetime in 
+					(Select 
+						refdatetime 
+					From(
+						Select 
+							refdatetime,
+							ROW_NUMBER() OVER (PARTITION BY yearweeknum ORDER BY refdatetime ASC) AS rownum 
+						From 
+							RTY_continuous_adjusted_1hour rh) as prn 
+						Where 
+							rownum<5))
+	    and refdatetime>'2008-09-22') as yay
+  Group by refdate,[weekday]) as nwm) as final
+Where 
+	nextweekmove is not null
+Order By refdate
