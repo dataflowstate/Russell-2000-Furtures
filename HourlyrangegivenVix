@@ -1,0 +1,19 @@
+--average hourly range difference depending on Vix price
+Select 
+	CONVERT(time, r.refdatetime) as hourlytime,
+	avg(r.wickrange_pct) as wickrange_pct_avg,
+	avg(r.volume) as vol_avg,
+	v.vollevel
+From dbo.RTY_continuous_adjusted_1hour r
+inner join
+	(Select 
+		refdate,
+		Case 
+			when pricehigh<20 then 1 
+			when (pricehigh<30 and pricehigh>=20) then 2
+			when pricehigh>=30 then 3 else 0 
+		end as vollevel
+	From
+		dbo.[Daily VIX Price]) v on CONVERT(date, r.refdatetime)=v.refdate
+Group by v.vollevel,CONVERT(time, r.refdatetime)
+Order by vollevel, hourlytime 
